@@ -1,18 +1,38 @@
+// routes/users.js
 const express = require("express");
 const router = express.Router();
+const { auth } = require("../middleware/auth");
 const {
   registerUser,
   loginUser,
-  getUserProfile
+  getUserProfile,
+  getUserById,
+  updateUserProfile
 } = require("../controllers/userController");
 
-// POST /api/users/register
+// @route   POST /api/users/register
+// @desc    Register new user
+// @access  Public
 router.post("/register", registerUser);
 
-// POST /api/users/login
+// @route   POST /api/users/login  
+// @desc    Login user
+// @access  Public
 router.post("/login", loginUser);
 
-// GET /api/users/:id
-router.get("/:id", getUserProfile);
+// @route   GET /api/users/profile
+// @desc    Get current user's profile
+// @access  Private
+router.get("/profile", auth, getUserProfile);
+
+// @route   PUT /api/users/profile
+// @desc    Update current user's profile
+// @access  Private
+router.put("/profile", auth, updateUserProfile);
+
+// @route   GET /api/users/:id
+// @desc    Get user by ID (public profile)
+// @access  Public
+router.get("/:id", getUserById);
 
 module.exports = router;
