@@ -41,3 +41,14 @@ export const resourcesService = {
   updateResource: (id, resourceData) => api.put(`/resources/${id}`, resourceData),
   deleteResource: (id) => api.delete(`/resources/${id}`),
 };
+
+export const eventService = {
+  getAllEvents: (params) => api.get('/events', { params }),
+  getEventById: (id) => api.get(`/events/${id}`),
+  createEvent: (eventData) => api.post('/events', eventData),
+  updateEvent: (id, eventData) => api.put(`/events/${id}`, eventData),
+  deleteEvent: (id) => api.delete(`/events/${id}`),
+  rsvpToEvent: (id, status) => api.post(`/events/${id}/rsvp`, { status }),
+  getMyOrganizedEvents: () => api.get('/events/my/organized'),
+  getMyAttendingEvents: () => api.get('/events/my/attending'),
+};
