@@ -38,7 +38,7 @@ const registerUser = async (req, res) => {
       });
     }
 
-    // Check for existing user
+    // Check for existing user by username or email
     const existingUser = await User.findOne({ 
       $or: [
         { username: username.toLowerCase() }, 
@@ -56,9 +56,10 @@ const registerUser = async (req, res) => {
     }
 
     // Hash password
+    // process.env.BCRYPT_SALT_ROUNDS is set in the .env file
     const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS) || 12;
     const salt = await bcrypt.genSalt(saltRounds);
-    const passwordHash = await bcrypt.hash(password, salt);
+    const passwordHash = await bcrypt.hash(password, salt); 
 
     // Create new user
     const newUser = await User.create({

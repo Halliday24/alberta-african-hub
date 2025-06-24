@@ -9,6 +9,8 @@ const userSchema = new mongoose.Schema({
 });
 
 // Instance method to validate password
+// bcrpt.compare() method compares the password entered by the user 
+// with the hashed password stored in the database
 userSchema.methods.comparePassword = async function (password) {
   return await bcrypt.compare(password, this.passwordHash);
 };
