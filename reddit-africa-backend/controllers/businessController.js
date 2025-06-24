@@ -1,6 +1,6 @@
 // controllers/businessController.js
-const Business = require("../models/Business");
-const validator = require("validator");
+const Business = require("../models/Business"); // Import Business model 
+const validator = require("validator"); // Import validator library for input validation
 
 // @desc    Create a new business listing
 // @route   POST /api/businesses
@@ -14,15 +14,15 @@ const createBusiness = async (req, res) => {
       phone,
       address,
       category
-    } = req.body;
+    } = req.body; // Destructure request body
 
-    // Validation
+    // Validation in server-side
     if (!name || !description) {
       return res.status(400).json({
         message: "Please provide business name and description"
       });
     }
-
+    
     if (name.trim().length === 0 || description.trim().length === 0) {
       return res.status(400).json({
         message: "Name and description cannot be empty"
@@ -78,7 +78,9 @@ const createBusiness = async (req, res) => {
       category
     });
 
-    // Populate owner details
+    // populate automatically replace references in a document with the 
+    // actual referenced documents(e.g. replace user ID with user object) from another collection.
+    // This will replace the owner ID with the owner's username
     await business.populate('owner', 'username');
 
     res.status(201).json({
@@ -86,7 +88,9 @@ const createBusiness = async (req, res) => {
       business
     });
 
-  } catch (error) {
+  } catch (error) { 
+    // If business creation fails, handle errors
+    // Log error to console and return server error response
     console.error("Create business error:", error);
     
     if (error.name === 'ValidationError') {
@@ -106,7 +110,9 @@ const createBusiness = async (req, res) => {
 // @desc    Get all businesses
 // @route   GET /api/businesses
 // @access  Public
-const getAllBusinesses = async (req, res) => {
+const getAllBusinesses = async (req, res) => {  
+  // req.query is an object containing the query strings from the request URL
+  // e.g., /api/businesses?page=1&limit=10&category=restaurant&search=pizza&owner=12345&sort=name
   try {
     const {
       page = 1,
@@ -114,12 +120,13 @@ const getAllBusinesses = async (req, res) => {
       category,
       search,
       owner,
-      sort = 'name'
+      sort = 'name' // default sort by name
     } = req.query;
 
-    // Build query
+    // Build query from query string parameters
     const query = {};
 
+    // validate parameters
     if (category && category !== 'all') {
       query.category = category;
     }
@@ -128,6 +135,10 @@ const getAllBusinesses = async (req, res) => {
       query.owner = owner;
     }
 
+    // extract search term
+    // if search is provided, we will search in name, description, and category fields
+    // $or operator will match any document that contains the search term in any of the fields
+    // $options: 'i' is used to perform a case-insensitive search
     if (search) {
       query.$or = [
         { name: { $regex: search, $options: 'i' } },
@@ -136,7 +147,7 @@ const getAllBusinesses = async (req, res) => {
       ];
     }
 
-    // Build sort query
+    // Build sort query from different sort options
     let sortQuery = {};
     switch (sort) {
       case 'name':
@@ -159,13 +170,13 @@ const getAllBusinesses = async (req, res) => {
     }
 
     // Execute query with pagination
-    const businesses = await Business.find(query)
-      .populate('owner', 'username')
-      .sort(sortQuery)
-      .limit(parseInt(limit))
-      .skip((parseInt(page) - 1) * parseInt(limit));
-
-    const totalBusinesses = await Business.countDocuments(query);
+    // pagination is a common pattern in APIs to limit the number of results returned in a single request
+    const businesses = await Business.find(query) // find all businesses that match the query
+      .populate('owner', 'username') // populate owner details
+      .sort(sortQuery) // sort by sortQuery
+      .limit(parseInt(limit)) // limit to limit number of results per page
+      .skip((parseInt(page) - 1) * parseInt(limit)); // .skip(0 * 10) for page 1, .skip(1 * 10) for page 2, etc.
+    const totalBusinesses = await Business.countDocuments(query); 
 
     res.json({
       businesses,
@@ -305,7 +316,6 @@ const updateBusiness = async (req, res) => {
       message: "Business updated successfully",
       business
     });
-
   } catch (error) {
     console.error("Update business error:", error);
     
