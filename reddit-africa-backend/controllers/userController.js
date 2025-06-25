@@ -9,7 +9,6 @@ const validator = require("validator");
 const registerUser = async (req, res) => {
   try {
     const { username, email, password } = req.body;
-
     // Validation
     if (!username || !email || !password) {
       return res.status(400).json({ 
@@ -70,7 +69,6 @@ const registerUser = async (req, res) => {
 
     // Generate JWT token
     const token = generateToken(newUser._id);
-
     // Return user data (excluding password) and token
     res.status(201).json({
       message: "User registered successfully",
@@ -113,7 +111,6 @@ const loginUser = async (req, res) => {
 
     // Find user by email
     const user = await User.findOne({ email: email.toLowerCase() });
-    
     if (!user) {
       return res.status(401).json({ 
         message: "Invalid email or password" 

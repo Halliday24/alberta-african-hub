@@ -5,6 +5,7 @@ const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const path = require("path");
+const connectDB = require("./config/db"); // Import the database connection function
 
 // Load environment variables
 require("dotenv").config();
@@ -100,47 +101,9 @@ if (process.env.NODE_ENV === 'development') {
   });
 }
 
-// Database connection with better error handling
-const connectDB = async () => {
-  try {
-    const mongoURI = process.env.MONGODB_URI || "mongodb://localhost:27017/african-community";
-    
-    const options = {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      maxPoolSize: 10, // Maintain up to 10 socket connections
-      serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
-      socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
-      bufferMaxEntries: 0, // Disable mongoose buffering
-      bufferCommands: false, // Disable mongoose buffering
-    };
-
-    const conn = await mongoose.connect(mongoURI, options);
-    
-    console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
-    console.log(`📊 Database: ${conn.connection.name}`);
-    
-    // Handle connection events
-    mongoose.connection.on('error', (err) => {
-      console.error('❌ MongoDB connection error:', err);
-    });
-    
-    mongoose.connection.on('disconnected', () => {
-      console.warn('⚠️ MongoDB disconnected');
-    });
-    
-    mongoose.connection.on('reconnected', () => {
-      console.log('🔄 MongoDB reconnected');
-    });
-    
-  } catch (error) {
-    console.error("❌ MongoDB connection failed:", error.message);
-    process.exit(1);
-  }
-};
-
 // Connect to database
 connectDB();
+
 
 // Routes
 app.use("/api/users", require("./routes/users"));
@@ -282,7 +245,7 @@ process.on('unhandledRejection', (err, promise) => {
   });
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT; //|| 5000;
 const server = app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`📱 Frontend should connect to: http://localhost:${PORT}`);
