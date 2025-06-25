@@ -368,10 +368,80 @@ const deleteBusiness = async (req, res) => {
   }
 };
 
+const reviewBusiness = async (req, res) => {
+  try {
+    const { rating, comment } = req.body;
+    const businessId = req.params.id;
+    const userId = req.user._id;
+
+    // Validate rating
+    if (!rating || rating < 1 || rating > 5) {
+      return res.status(400).json({ 
+        message: "Rating must be between 1 and 5" 
+      });
+    }
+
+    const Business = require("../models/Business");
+    const business = await Business.findById(businessId);
+
+    if (!business) {
+      return res.status(404).json({ message: "Business not found" });
+    }
+
+    // Check if user already reviewed this business
+    const existingReview = business.reviews.find(
+      review => review.user.toString() === userId.toString()
+    );
+
+    if (existingReview) {
+      return res.status(400).json({ 
+        message: "You have already reviewed this business" 
+      });
+    }
+
+    // Add review
+    business.reviews.push({
+      user: userId,
+      rating,
+      comment: comment || ""
+    });
+
+    await business.save();
+
+    // Populate the new review with user info
+    await business.populate('reviews.user', 'username');
+
+    res.status(201).json({
+      message: "Review added successfully",
+      business
+    });
+
+  } catch (error) {
+    console.error("Add review error:", error);
+    res.status(500).json({ message: "Server error adding review" });
+  }
+};
+
+const getMyListings = async (req, res) => {
+  try {
+    const Business = require("../models/Business");
+    const businesses = await Business.find({ owner: req.user._id })
+      .sort({ createdAt: -1 });
+
+    res.json({ businesses });
+
+  } catch (error) {
+    console.error("Get my businesses error:", error);
+    res.status(500).json({ message: "Server error fetching businesses" });
+  }
+}
+
 module.exports = {
   createBusiness,
   getAllBusinesses,
   getBusinessById,
   updateBusiness,
-  deleteBusiness
+  deleteBusiness,
+  reviewBusiness,
+  getMyListings
 };
