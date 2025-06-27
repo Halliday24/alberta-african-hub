@@ -1,7 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+/* These styles are for the main App component in addition to the global styles 
+in the index.css and tailwind styles*/
 .App {
   text-align: center;
 }

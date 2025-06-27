@@ -9,6 +9,7 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
 });
+/* In the backend test, the tag used for authentication is "Bearer Token" So we'll need to get it */
 
 // Add auth token to requests
 api.interceptors.request.use((config) => {
