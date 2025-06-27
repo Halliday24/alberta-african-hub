@@ -1,7 +1,17 @@
 // frontend/src/components/Register.js
 import React, { useState } from 'react';
 import { useAuth } from '../services/useAuth';
-import { Eye, EyeOff, Mail, Lock, Loader, User } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, Loader, User } from 'lucide-react'; // Importing icons from lucide-react
+
+/**
+ * This handle the user sign-up functionality.
+ * This component allows users to create a new account.
+ * It allows users to enter their username, email, password, and confirm password. 
+ * It uses the `useAuth` hook to access the authentication service.
+ * @param {Function} onClose - CallbackFunction to close the signup modal  
+ * @param {Function} switchToLogin - Callback Function to switch to the login modal
+ * @returns 
+ */
 
 export const Register = ({ onClose, switchToLogin }) => {
   const { register } = useAuth();
@@ -15,6 +25,7 @@ export const Register = ({ onClose, switchToLogin }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // Callback function to handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -40,8 +51,11 @@ export const Register = ({ onClose, switchToLogin }) => {
     }
   };
 
+  // Callback function to handle input changes
   const handleChange = (e) => {
     setFormData({
+      // spread the existing form data and update the value of the 
+      // input field that triggered the change
       ...formData,
       [e.target.name]: e.target.value
     });
@@ -58,6 +72,7 @@ export const Register = ({ onClose, switchToLogin }) => {
           <p className="text-gray-600">Create your account</p>
         </div>
 
+        {/* Show the error message if there is one */}
         {error && (
           <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
             {error}
@@ -65,6 +80,7 @@ export const Register = ({ onClose, switchToLogin }) => {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Username input field */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Username
@@ -82,7 +98,7 @@ export const Register = ({ onClose, switchToLogin }) => {
               />
             </div>
           </div>
-
+          {/* Email input field */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Email Address
@@ -100,7 +116,7 @@ export const Register = ({ onClose, switchToLogin }) => {
               />
             </div>
           </div>
-
+          {/* Password input field */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Password
@@ -121,11 +137,13 @@ export const Register = ({ onClose, switchToLogin }) => {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
               >
+                {/* Toggle password visibility */}
                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
             </div>
           </div>
 
+          {/* Confirm Password input field */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Confirm Password
@@ -150,6 +168,7 @@ export const Register = ({ onClose, switchToLogin }) => {
             className="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading && <Loader className="w-4 h-4 animate-spin" />}
+            {/* Button text toggled based on loading state */}
             {loading ? 'Creating Account...' : 'Create Account'}
           </button>
         </form>

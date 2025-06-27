@@ -21,7 +21,7 @@ import {
   Plus,
   Loader,
   LogOut
-} from 'lucide-react';
+} from 'lucide-react'; // lucide-react icons
 import { useAuth } from '../services/useAuth';
 import { postsService, businessService, resourcesService } from '../services';
 import Login from './Login';
@@ -821,6 +821,7 @@ const AfricanCommunityPlatform = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Authentication Modals */}
+      {/* show Login Modal if the function is called*/}
       {showLogin && (
         <Login 
           onClose={closeAuthModals} 
@@ -831,6 +832,7 @@ const AfricanCommunityPlatform = () => {
         />
       )}
       
+      {/* show Register Modal if the function is called*/}
       {showRegister && (
         <Register 
           onClose={closeAuthModals} 
