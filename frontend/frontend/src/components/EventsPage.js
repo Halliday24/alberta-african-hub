@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../services/useAuth'; // Custom authentication hook
 import { Plus, Calendar, Clock, MapPin } from 'lucide-react'; // lucide-react icons
 import { eventService } from '../services';
+import { LoadingSpinner, ErrorMessage } from './common';
 
 
 const EventsPage = () => {
@@ -30,7 +31,6 @@ const EventsPage = () => {
         try {
             setLoading(prev => ({ ...prev, events: true }));
             const response = await eventService.getAllEvents();
-            console.log(response.data);
             setEvents(response.data.events);
         } catch (err) {
             setError('Failed to fetch events');
@@ -40,14 +40,35 @@ const EventsPage = () => {
         }
     }
 
-
-    
-    
     const filteredEvents = events.filter(event =>
         searchTerm === '' || 
         event.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         event.type.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    // Date is in UTC format in backend
+    const formatDateTime = (dateString) => {
+        const date = new Date(dateString);
+        
+        const months = ['January', 'February', 'March', 'April', 'May', 'June', 
+                       'July', 'August', 'September', 'October', 'November', 'December'];
+        
+        const month = months[date.getUTCMonth()];
+        const day = date.getUTCDate();
+        const year = date.getUTCFullYear();
+        
+        let hours = date.getUTCHours();
+        const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        
+        hours = hours % 12;
+        hours = hours ? hours : 12; // Convert 0 to 12
+        const formattedDate = `${month} ${day}, ${year}`
+        const formattedTime = `${hours}:${minutes} ${ampm}`;
+        
+        return [formattedDate, formattedTime];
+    }
+
     // Initial data fetch
     useEffect(() => {
         fetchEvents();
@@ -67,51 +88,49 @@ const EventsPage = () => {
         </div>
 
 
-        {/* Events Grid 
+        {/* Events Grid */}
         {loading.resources ? (
             <LoadingSpinner />
         ) : error ? (
-            <ErrorMessage message="Failed to load events" onRetry={fetchResources} />
+            <ErrorMessage message="Failed to load events" onRetry={fetchEvents} />
         ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredEvents.length > 0 ? filteredEvents.map(event => (
                 <div key={event._id} className="bg-white rounded-lg shadow-sm p-6">
                 <div className="mb-4">
                     <div>
-                    <h3 className="text-xl font-semibold mb-2">{event.name}</h3>
-                    <span className="inline-block bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded-full mt-1">
-                        {resource.type === 'church' ? 'Church' : 'Grocery Store'}
-                    </span>
+                        <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
+                        <p className="text-gray-700">{event.description}</p>
                     </div>
-                    <div className="flex items-center">
-                    <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                    <span className="ml-1 text-sm">{resource.rating || 4.5}</span>
+
+                    <div className="space-y-2 text-sm text-gray-600 m-4">
+
+                        <div className="flex items-center gap-2">
+                            <Calendar className="w-4 h-4" />
+                            <span>{formatDateTime(event.date)[0]}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <Clock className="w-4 h-4" />
+                            <span>{formatDateTime(event.date)[1]}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <MapPin className="w-4 h-4" />
+                            <span>{event.location.address}</span>
+                        </div>
+                    </div>
+                    <div className="pt-4 border-t border-gray-200">
+                        <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500">{event.attendeeCount} attending</span>
+                        <button 
+                        onClick={() => user ? alert('RSVP functionality coming soon!') : setShowLogin(true)}
+                        className="bg-green-600 text-white px-4 py-2 rounded text-sm hover:bg-green-700 transition-colors"
+                        >
+                        RSVP
+                        </button>
                     </div>
                 </div>
-                
-                <div className="space-y-2 text-sm text-gray-600">
-                    <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4" />
-                    <span>{resource.address}</span>
-                    </div>
-                    {resource.phone && (
-                    <div className="flex items-center gap-2">
-                        <Phone className="w-4 h-4" />
-                        <span>{resource.phone}</span>
-                    </div>
-                    )}
-                    {resource.hours && (
-                    <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4" />
-                        <span>{resource.hours}</span>
-                    </div>
-                    )}
                 </div>
-                
-                <div className="mt-4 pt-4 border-t border-gray-200">
-                    <span className="text-sm text-gray-500">{resource.reviews?.length || 0} reviews</span>
-                </div>
-                </div>
+            </div>
             )) : (
                 <div className="col-span-2 text-center py-8 text-gray-500">
                 No events found. Try a different search term.
@@ -119,9 +138,9 @@ const EventsPage = () => {
             )}
             </div>
         )}
-        */}
+        
 
-        {/* Sample Events - would be replaced with real API data */}
+        {/* Sample Events - would be replaced with real API data 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div className="bg-white rounded-lg shadow-sm p-6">
             <div className="mb-4">
@@ -224,8 +243,10 @@ const EventsPage = () => {
                 </div>
             </div>
             </div>
+        </div>*/}
+      
         </div>
-        </div>
+        
     );
 }
 export default EventsPage;

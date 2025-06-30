@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../services/useAuth';
 import { LogOut, Star, Loader } from 'lucide-react';
-import { postsService, businessService, resourcesService } from '../services';
+import { postsService, businessService, resourcesService, eventService} from '../services';
 import Login from './Login';
 import { Register } from './Register';
 import { LoadingSpinner, ErrorMessage } from './common';
@@ -31,6 +31,7 @@ const HomePage = () => {
     const [posts, setPosts] = useState([]);
     const [businesses, setBusinesses] = useState([]);
     const [resources, setResources] = useState([]);
+    const [events, setEvents] = useState([]);
     const [stats, setStats] = useState({
         totalMembers: 0,
         totalBusinesses: 0,
@@ -61,59 +62,76 @@ const HomePage = () => {
 
     // Fetch data functions
     const fetchPosts = async () => {
-    try {
-        setLoading(prev => ({ ...prev, posts: true }));
-        const response = await postsService.getAllPosts();        
-        // Add a 500ms delay before setting data (adjust time as needed)
-        await new Promise(resolve => setTimeout(resolve, 500));
+        try {
+            setLoading(prev => ({ ...prev, posts: true }));
+            const response = await postsService.getAllPosts();        
+            // Add a 500ms delay before setting data (adjust time as needed)
+            await new Promise(resolve => setTimeout(resolve, 500));
 
-        setPosts(response.data.posts);
-    } catch (err) {
-        setError('Failed to fetch posts');
-        console.error('Error fetching posts:', err);
-    } finally {
-        setLoading(prev => ({ ...prev, posts: false }));
-    }
+            setPosts(response.data.posts);
+        } catch (err) {
+            setError('Failed to fetch posts');
+            console.error('Error fetching posts:', err);
+        } finally {
+            setLoading(prev => ({ ...prev, posts: false }));
+        }
     };
 
     const fetchBusinesses = async () => {
-    try {
-        setLoading(prev => ({ ...prev, businesses: true }));
-        const response = await businessService.getAllBusinesses();
+        try {
+            setLoading(prev => ({ ...prev, businesses: true }));
+            const response = await businessService.getAllBusinesses();
 
-        // Add a 500ms delay before setting data (adjust time as needed)
-        await new Promise(resolve => setTimeout(resolve, 500));
+            // Add a 500ms delay before setting data (adjust time as needed)
+            await new Promise(resolve => setTimeout(resolve, 500));
 
-        setBusinesses(response.data.businesses);
-    } catch (err) {
-        setError('Failed to fetch businesses');
-        console.error('Error fetching businesses:', err);
-    } finally {
-        setLoading(prev => ({ ...prev, businesses: false }));
-    }
+            setBusinesses(response.data.businesses);
+        } catch (err) {
+            setError('Failed to fetch businesses');
+            console.error('Error fetching businesses:', err);
+        } finally {
+            setLoading(prev => ({ ...prev, businesses: false }));
+        }
     };
     
     const fetchResources = async () => {
-    try {
-        setLoading(prev => ({ ...prev, resources: true }));
-        const response = await resourcesService.getAllResources();
-        // Add a 500ms delay before setting data (adjust time as needed)
-        await new Promise(resolve => setTimeout(resolve, 500));
+        try {
+            setLoading(prev => ({ ...prev, resources: true }));
+            const response = await resourcesService.getAllResources();
+            // Add a 500ms delay before setting data (adjust time as needed)
+            await new Promise(resolve => setTimeout(resolve, 500));
 
-        setResources(response.data.resources);
-    } catch (err) {
-        setError('Failed to fetch resources');
-        console.error('Error fetching resources:', err);
-    } finally {
-        setLoading(prev => ({ ...prev, resources: false }));
-    }
+            setResources(response.data.resources);
+        } catch (err) {
+            setError('Failed to fetch resources');
+            console.error('Error fetching resources:', err);
+        } finally {
+            setLoading(prev => ({ ...prev, resources: false }));
+        }
     };
+
+    /**
+     * This function would typically fetch events from an API and render them here.
+     */
+    const fetchEvents = async () => {
+        try {
+            setLoading(prev => ({ ...prev, events: true }));
+            const response = await eventService.getAllEvents();
+            setEvents(response.data.events);
+        } catch (err) {
+            setError('Failed to fetch events');
+            console.error('Error fetching events:', err);
+        } finally {
+            setLoading(prev => ({ ...prev, events: false }));
+        }
+    }
 
     // Initial data fetch
     useEffect(() => {
         fetchPosts();
         fetchBusinesses();
         fetchResources();
+        fetchEvents();
     }, []);
     
     // Update stats when data changes
@@ -122,7 +140,7 @@ const HomePage = () => {
         totalMembers: 2847, // This would come from user count API
         totalBusinesses: businesses.length,
         totalResources: resources.length,
-        totalEvents: 34 // This would come from events API
+        totalEvents: events.length
       });
     }, [businesses.length, resources.length]);
 
