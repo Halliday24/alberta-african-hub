@@ -63,8 +63,11 @@ const HomePage = () => {
     const fetchPosts = async () => {
     try {
         setLoading(prev => ({ ...prev, posts: true }));
-        const response = await postsService.getAllPosts();
-        setPosts(response.data);
+        const response = await postsService.getAllPosts();        
+        // Add a 500ms delay before setting data (adjust time as needed)
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        setPosts(response.data.posts);
     } catch (err) {
         setError('Failed to fetch posts');
         console.error('Error fetching posts:', err);
@@ -72,12 +75,16 @@ const HomePage = () => {
         setLoading(prev => ({ ...prev, posts: false }));
     }
     };
-    
+
     const fetchBusinesses = async () => {
     try {
         setLoading(prev => ({ ...prev, businesses: true }));
         const response = await businessService.getAllBusinesses();
-        setBusinesses(response.data);
+
+        // Add a 500ms delay before setting data (adjust time as needed)
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        setBusinesses(response.data.businesses);
     } catch (err) {
         setError('Failed to fetch businesses');
         console.error('Error fetching businesses:', err);
@@ -90,7 +97,10 @@ const HomePage = () => {
     try {
         setLoading(prev => ({ ...prev, resources: true }));
         const response = await resourcesService.getAllResources();
-        setResources(response.data);
+        // Add a 500ms delay before setting data (adjust time as needed)
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        setResources(response.data.resources);
     } catch (err) {
         setError('Failed to fetch resources');
         console.error('Error fetching resources:', err);

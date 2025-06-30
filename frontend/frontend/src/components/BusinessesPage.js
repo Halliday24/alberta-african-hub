@@ -6,6 +6,7 @@ import { Plus, Star, MapPin, Phone, Mail, Globe } from 'lucide-react';
 import { LoadingSpinner, ErrorMessage } from './common';
 
 const BusinessesPage = () => {
+    //console.log(activeTab);
 
     const [searchTerm, setSearchTerm] = useState('');
     
@@ -35,7 +36,10 @@ const BusinessesPage = () => {
         try {
           setLoading(prev => ({ ...prev, businesses: true }));
           const response = await businessService.getAllBusinesses();
-          setBusinesses(response.data);
+
+          // Add a 500ms delay before setting data (adjust time as needed)
+          //await new Promise(resolve => setTimeout(resolve, 500));
+          setBusinesses(response.data.businesses);
         } catch (err) {
           setError('Failed to fetch businesses');
           console.error('Error fetching businesses:', err);
@@ -43,6 +47,11 @@ const BusinessesPage = () => {
           setLoading(prev => ({ ...prev, businesses: false }));
         }
     };
+
+     // Initial data fetch
+     useEffect(() => {
+        fetchBusinesses();
+    }, []);
 
     return (
         <div className="space-y-6">
@@ -80,7 +89,7 @@ const BusinessesPage = () => {
                 <div className="flex items-start justify-between mb-4">
                     <div>
                     <h3 className="text-xl font-semibold">{business.name}</h3>
-                    <p className="text-gray-600">by {business.owner}</p>
+                    <p className="text-gray-600">by {business.owner.username}</p>
                     <span className="inline-block bg-green-100 text-green-800 text-sm px-2 py-1 rounded-full mt-1">
                         {business.category}
                     </span>

@@ -1,8 +1,13 @@
 import { useState, useEffect, useContext, createContext } from 'react';
 import { authService } from '../services';
 
-const AuthContext = createContext();
+// This is the context that will be used to access the authentication service
+const AuthContext = createContext(); 
 
+/**
+ * This hook is used to access the authentication service
+ * @returns {Object} - The authentication context
+ */
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -10,13 +15,17 @@ export const useAuth = () => {
   }
   return context;
 };
-
+/**
+ * This component is used to provide the authentication context to the app
+ * @param {Object} props  
+ * @returns 
+ */
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token'); //
     if (token) {
       loadUser();
     } else {
@@ -24,6 +33,10 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
+  /**
+   * This function is used to load the user from the database
+   * @returns {Promise} - The user data
+   */
   const loadUser = async () => {
     try {
       const response = await authService.getProfile();
@@ -37,6 +50,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     const response = await authService.login(credentials);
+    console.log(response);
     const { token, user } = response.data;
     localStorage.setItem('token', token);
     setUser(user);

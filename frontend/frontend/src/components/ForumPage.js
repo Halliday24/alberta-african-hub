@@ -46,7 +46,7 @@ const ForumPage = () => {
         try {
           setLoading(prev => ({ ...prev, posts: true }));
           const response = await postsService.getAllPosts();
-          setPosts(response.data);
+          setPosts(response.data.posts);
         } catch (err) {
           setError('Failed to fetch posts');
           console.error('Error fetching posts:', err);
@@ -64,33 +64,33 @@ const ForumPage = () => {
         }
 
         try {
-        const response = await postsService.createPost(newPost);
-        setPosts([response.data, ...posts]);
-        setNewPost({ title: '', content: '', category: 'general' });
-        setShowCreatePost(false);
+            const response = await postsService.createPost(newPost);
+            setPosts([response.data, ...posts]);
+            setNewPost({ title: '', content: '', category: 'general' });
+            setShowCreatePost(false);
         } catch (err) {
-        setError('Failed to create post');
-        console.error('Error creating post:', err);
+            setError('Failed to create post');
+            console.error('Error creating post:', err);
         }
     };
 
     // Handle voting
     const handleVote = async (postId, voteType) => {
         if (!user) {
-        setShowLogin(true);
-        return;
+            setShowLogin(true);
+            return;
         }
 
         try {
-        await postsService.votePost(postId, voteType);
-        setPosts(posts.map(post => 
-            post._id === postId 
-            ? { ...post, upvotes: post.upvotes + (voteType === 'up' ? 1 : -1) }
-            : post
-        ));
+            await postsService.votePost(postId, voteType);
+            setPosts(posts.map(post => 
+                post._id === postId 
+                ? { ...post, upvotes: post.upvotes + (voteType === 'up' ? 1 : -1) }
+                : post
+            ));
         } catch (err) {
-        setError('Failed to vote');
-        console.error('Error voting:', err);
+            setError('Failed to vote');
+            console.error('Error voting:', err);
         }
     };
 
@@ -113,6 +113,12 @@ const ForumPage = () => {
         if (diffInHours < 48) return '1 day ago';
         return `${Math.floor(diffInHours / 24)} days ago`;
     };
+
+    
+     // Initial data fetch
+     useEffect(() => {
+        fetchPosts();
+    }, []);
 
     return (
         <div className="space-y-6">
@@ -202,6 +208,7 @@ const ForumPage = () => {
         </div>
 
         {/* Posts */}
+        
         {loading.posts ? (
             <LoadingSpinner />
         ) : error ? (

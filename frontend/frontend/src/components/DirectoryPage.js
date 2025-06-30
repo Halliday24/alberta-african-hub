@@ -34,7 +34,7 @@ const DirectoryPage = () => {
         try {
           setLoading(prev => ({ ...prev, resources: true }));
           const response = await resourcesService.getAllResources();
-          setResources(response.data);
+          setResources(response.data.resources);
         } catch (err) {
           setError('Failed to fetch resources');
           console.error('Error fetching resources:', err);
@@ -42,6 +42,12 @@ const DirectoryPage = () => {
           setLoading(prev => ({ ...prev, resources: false }));
         }
     };
+
+    
+     // Initial data fetch
+     useEffect(() => {
+        fetchResources();
+    }, []);
 
     return (
         <div className="space-y-6">

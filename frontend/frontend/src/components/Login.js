@@ -13,7 +13,7 @@ import { Eye, EyeOff, Mail, Lock, Loader } from 'lucide-react'; // Importing ico
  * @returns 
  */
 const Login = ({ onClose, switchToRegister }) => {
-  const { login } = useAuth(); // useAuth hook to access the login function from the authentication service
+  const { login } = useAuth(); // get the context from the useAuth hook
   const [formData, setFormData] = useState({
     email: '',
     password: ''
