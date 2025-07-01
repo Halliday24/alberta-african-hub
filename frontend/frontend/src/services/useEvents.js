@@ -19,7 +19,6 @@ export const useEvents = () => {
         }
     }
 
-
     return {
         events,
         loading,

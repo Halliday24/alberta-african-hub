@@ -6,6 +6,10 @@ import Login from './Login';
 import { Register } from './Register';
 import { LoadingSpinner, ErrorMessage } from './common';
 import {     usePosts   } from '../services/usePosts';
+import {   useBusinesses  } from '../services/useBusinesses';
+import {   useResources  } from '../services/useResources';
+import {   useEvents  } from '../services/useEvents';
+
 
 /**
  * This is the component that renders the home page of the website.
@@ -15,14 +19,10 @@ import {     usePosts   } from '../services/usePosts';
 
 const HomePage = () => {
     const { user, logout } = useAuth();
-    const {
-        posts,
-        //loading,
-        //error,
-        fetchPosts,
-        createPost,
-        votePost,
-      } = usePosts();
+    const { posts, fetchPosts} = usePosts();
+    const { businesses, fetchBusinesses } = useBusinesses();
+    const { resources, fetchResources } = useResources();
+    const { events, fetchEvents } = useEvents();
     const [activeTab, setActiveTab] = useState('home');
     // Auth modal states
     const [showLogin, setShowLogin] = useState(false);
@@ -37,9 +37,9 @@ const HomePage = () => {
     const [error, setError] = useState(null);
 
     //const [posts, setPosts] = useState([]);
-    const [businesses, setBusinesses] = useState([]);
-    const [resources, setResources] = useState([]);
-    const [events, setEvents] = useState([]);
+    //const [businesses, setBusinesses] = useState([]);
+    //const [resources, setResources] = useState([]);
+    //const [events, setEvents] = useState([]);
     const [stats, setStats] = useState({
         totalMembers: 0,
         totalBusinesses: 0,
@@ -85,7 +85,7 @@ const HomePage = () => {
         }
     };*/
 
-    const fetchBusinesses = async () => {
+    /*const fetchBusinesses = async () => {
         try {
             setLoading(prev => ({ ...prev, businesses: true }));
             const response = await businessService.getAllBusinesses();
@@ -100,9 +100,9 @@ const HomePage = () => {
         } finally {
             setLoading(prev => ({ ...prev, businesses: false }));
         }
-    };
+    };*/
     
-    const fetchResources = async () => {
+    /*const fetchResources = async () => {
         try {
             setLoading(prev => ({ ...prev, resources: true }));
             const response = await resourcesService.getAllResources();
@@ -116,12 +116,9 @@ const HomePage = () => {
         } finally {
             setLoading(prev => ({ ...prev, resources: false }));
         }
-    };
+    };*/
 
-    /**
-     * This function would typically fetch events from an API and render them here.
-     */
-    const fetchEvents = async () => {
+    /*const fetchEvents = async () => {
         try {
             setLoading(prev => ({ ...prev, events: true }));
             const response = await eventService.getAllEvents();
@@ -132,7 +129,7 @@ const HomePage = () => {
         } finally {
             setLoading(prev => ({ ...prev, events: false }));
         }
-    }
+    }*/
 
     // Initial data fetch
     useEffect(() => {
@@ -142,7 +139,9 @@ const HomePage = () => {
         fetchEvents();
     }, []);
     
-    // Update stats when data changes
+    // Update stats when data changes 
+    // Place the values to be updated in an array, this tells 
+    // React when to re-run the useEffect code 
     useEffect(() => {
       setStats({
         totalMembers: 2847, // This would come from user count API
@@ -150,7 +149,7 @@ const HomePage = () => {
         totalResources: resources.length,
         totalEvents: events.length
       });
-    }, [businesses.length, resources.length]);
+    }, [businesses.length, resources.length, events.length]);
 
     // Format date function// Format date function
     const formatDate = (dateString) => {
