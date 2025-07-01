@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../services/useAuth';
 import { LogOut, Star, Loader } from 'lucide-react';
-import { postsService, businessService, resourcesService, eventService} from '../services';
 import Login from './Login';
 import { Register } from './Register';
 import { LoadingSpinner, ErrorMessage } from './common';
@@ -15,8 +14,6 @@ import {   useEvents  } from '../services/useEvents';
  * This is the component that renders the home page of the website.
  * @returns 
  */
-
-
 const HomePage = () => {
     const { user, logout } = useAuth();
     const { posts, fetchPosts} = usePosts();
@@ -67,69 +64,6 @@ const HomePage = () => {
         setShowLogin(false);
         setShowRegister(false);
     };
-
-    // Fetch data functions
-    /*const fetchPosts = async () => {
-        try {
-            setLoading(prev => ({ ...prev, posts: true }));
-            const response = await postsService.getAllPosts();        
-            // Add a 500ms delay before setting data (adjust time as needed)
-            await new Promise(resolve => setTimeout(resolve, 500));
-
-            setPosts(response.data.posts);
-        } catch (err) {
-            setError('Failed to fetch posts');
-            console.error('Error fetching posts:', err);
-        } finally {
-            setLoading(prev => ({ ...prev, posts: false }));
-        }
-    };*/
-
-    /*const fetchBusinesses = async () => {
-        try {
-            setLoading(prev => ({ ...prev, businesses: true }));
-            const response = await businessService.getAllBusinesses();
-
-            // Add a 500ms delay before setting data (adjust time as needed)
-            await new Promise(resolve => setTimeout(resolve, 500));
-
-            setBusinesses(response.data.businesses);
-        } catch (err) {
-            setError('Failed to fetch businesses');
-            console.error('Error fetching businesses:', err);
-        } finally {
-            setLoading(prev => ({ ...prev, businesses: false }));
-        }
-    };*/
-    
-    /*const fetchResources = async () => {
-        try {
-            setLoading(prev => ({ ...prev, resources: true }));
-            const response = await resourcesService.getAllResources();
-            // Add a 500ms delay before setting data (adjust time as needed)
-            await new Promise(resolve => setTimeout(resolve, 500));
-
-            setResources(response.data.resources);
-        } catch (err) {
-            setError('Failed to fetch resources');
-            console.error('Error fetching resources:', err);
-        } finally {
-            setLoading(prev => ({ ...prev, resources: false }));
-        }
-    };*/
-
-    /*const fetchEvents = async () => {
-        try {
-            setLoading(prev => ({ ...prev, events: true }));
-            const response = await eventService.getAllEvents();
-            setEvents(response.data.events);
-        } catch (err) {
-            setError('Failed to fetch events');
-            console.error('Error fetching events:', err);
-        } finally {
-            setLoading(prev => ({ ...prev, events: false }));
-        }
-    }*/
 
     // Initial data fetch
     useEffect(() => {
