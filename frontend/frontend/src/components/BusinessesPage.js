@@ -1,9 +1,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../services/useAuth';
-import { businessService } from '../services';
 import { Plus, Star, MapPin, Phone, Mail, Globe } from 'lucide-react';
 import { LoadingSpinner, ErrorMessage } from './common';
+import {   useBusinesses  } from '../services/useBusinesses';
+import { businessService } from '../services';
 
 const BusinessesPage = () => {
     //console.log(activeTab);
@@ -15,16 +16,21 @@ const BusinessesPage = () => {
     const [showLogin, setShowLogin] = useState(false);
     
     // Loading and error states
-    const [loading, setLoading] = useState({
+    /*const [loading, setLoading] = useState({
         posts: false,
         businesses: false,
         resources: false
-    });
-    const [error, setError] = useState(null);
+    });*/
+    // const [error, setError] = useState(null);
     
     // Businesses state
-    const [businesses, setBusinesses] = useState([]);
-    
+    // const [businesses, setBusinesses] = useState([]);
+    const {
+        businesses,
+        loading,
+        error,
+        fetchBusinesses
+      } = useBusinesses();
     const filteredBusinesses = businesses.filter(business =>
         searchTerm === '' || 
         business.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -32,7 +38,7 @@ const BusinessesPage = () => {
         business.category?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const fetchBusinesses = async () => {
+    /*const fetchBusinesses2 = async () => {
         try {
           setLoading(prev => ({ ...prev, businesses: true }));
           const response = await businessService.getAllBusinesses();
@@ -46,7 +52,7 @@ const BusinessesPage = () => {
         } finally {
           setLoading(prev => ({ ...prev, businesses: false }));
         }
-    };
+    };*/
 
      // Initial data fetch
      useEffect(() => {

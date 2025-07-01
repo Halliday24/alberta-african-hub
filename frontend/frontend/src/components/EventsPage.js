@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../services/useAuth'; // Custom authentication hook
 import { Plus, Calendar, Clock, MapPin } from 'lucide-react'; // lucide-react icons
 import { eventService } from '../services';
+import {   useEvents  } from '../services/useEvents';
 import { LoadingSpinner, ErrorMessage } from './common';
 
 
@@ -11,23 +12,29 @@ const EventsPage = () => {
     // get the user from the authentication context
     const { user, logout } = useAuth();
     const [showLogin, setShowLogin] = useState(false);
-    const [events, setEvents] = useState([]);
+    //const [events, setEvents] = useState([]);
 
     const [searchTerm, setSearchTerm] = useState('');
 
       // Loading and error states
-      const [loading, setLoading] = useState({
+    /*const [loading, setLoading] = useState({
         posts: false,
         businesses: false,
         resources: false,
         events: false
-    });
+    });*/
 
-    const [error, setError] = useState(null);
+    //const [error, setError] = useState(null);
+    const {
+        events,
+        loading,
+        error,
+        fetchEvents,
+      } = useEvents();
     /**
      * This function would typically fetch events from an API and render them here.
      */
-    const fetchEvents = async () => {
+    /*const fetchEvents = async () => {
         try {
             setLoading(prev => ({ ...prev, events: true }));
             const response = await eventService.getAllEvents();
@@ -38,7 +45,7 @@ const EventsPage = () => {
         } finally {
             setLoading(prev => ({ ...prev, events: false }));
         }
-    }
+    }*/
 
     const filteredEvents = events.filter(event =>
         searchTerm === '' || 

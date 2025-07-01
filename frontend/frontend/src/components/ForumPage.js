@@ -6,24 +6,33 @@ import {Plus, Loader, Clock, MessageCircle, User
 } from 'lucide-react';
 import { postsService } from '../services';
 import { LoadingSpinner, ErrorMessage } from './common';
+import {   usePosts  } from '../services/usePosts';
 
 const ForumPage = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('all');
 
     const { user, logout } = useAuth();
+    const {
+        posts,
+        loading,
+        error,
+        fetchPosts,
+        createPost,
+        votePost,
+      } = usePosts();
     // Auth modal states
     const [showLogin, setShowLogin] = useState(false);
     // Loading and error states
-    const [loading, setLoading] = useState({
+    /*const [loading, setLoading] = useState({
         posts: false,
         businesses: false,
         resources: false
-    });
-    const [error, setError] = useState(null);
+    });*/
+    //const [error, setError] = useState(null);
     
 
-    const [posts, setPosts] = useState([]);
+    //const [posts, setPosts] = useState([]);
     const [showCreatePost, setShowCreatePost] = useState(false);
     const [newPost, setNewPost] = useState({
         title: '',
@@ -42,7 +51,7 @@ const ForumPage = () => {
     ];
     
     // Fetch posts
-    const fetchPosts = async () => {
+    /*const fetchPosts2 = async () => {
         try {
           setLoading(prev => ({ ...prev, posts: true }));
           const response = await postsService.getAllPosts();
@@ -53,7 +62,7 @@ const ForumPage = () => {
         } finally {
           setLoading(prev => ({ ...prev, posts: false }));
         }
-      };
+      };*/
     
     // Handle post creation
     const handleCreatePost = async (e) => {
@@ -65,17 +74,17 @@ const ForumPage = () => {
 
         try {
             const response = await postsService.createPost(newPost);
-            setPosts([response.data, ...posts]);
+            //setPosts([response.data, ...posts]);
             setNewPost({ title: '', content: '', category: 'general' });
             setShowCreatePost(false);
         } catch (err) {
-            setError('Failed to create post');
+            //setError('Failed to create post');
             console.error('Error creating post:', err);
         }
     };
 
     // Handle voting
-    const handleVote = async (postId, voteType) => {
+    /*const handleVote = async (postId, voteType) => {
         if (!user) {
             setShowLogin(true);
             return;
@@ -92,7 +101,7 @@ const ForumPage = () => {
             setError('Failed to vote');
             console.error('Error voting:', err);
         }
-    };
+    };*/
 
     // Filter functions
     const filteredPosts = posts.filter(post => 
@@ -220,7 +229,7 @@ const ForumPage = () => {
                 <div className="flex items-start gap-4">
                     <div className="flex flex-col items-center gap-1">
                     <button 
-                        onClick={() => handleVote(post._id, 'up')}
+                        onClick={() => votePost(post._id, 'up')}
                         className="p-1 hover:bg-gray-100 rounded"
                         disabled={!user}
                     >
@@ -228,7 +237,7 @@ const ForumPage = () => {
                     </button>
                     <span className="font-semibold text-lg">{post.upvotes || 0}</span>
                     <button 
-                        onClick={() => handleVote(post._id, 'down')}
+                        onClick={() => votePost(post._id, 'down')}
                         className="p-1 hover:bg-gray-100 rounded"
                         disabled={!user}
                     >

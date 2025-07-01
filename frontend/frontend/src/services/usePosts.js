@@ -10,7 +10,7 @@ export const usePosts = () => {
     try {
       setLoading(true);
       const response = await postsService.getAllPosts();
-      setPosts(response.data);
+      setPosts(response.data.posts);
       setError(null);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to fetch posts');
@@ -26,6 +26,7 @@ export const usePosts = () => {
       return response.data;
     } catch (err) {
       throw new Error(err.response?.data?.message || 'Failed to create post');
+      
     }
   };
 
@@ -42,9 +43,9 @@ export const usePosts = () => {
     }
   };
 
-  useEffect(() => {
-    fetchPosts();
-  }, []);
+  // useEffect(() => {
+  //   fetchPosts();
+  // }, []);
 
   return {
     posts,

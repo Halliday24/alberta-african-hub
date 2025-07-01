@@ -5,6 +5,7 @@ import { postsService, businessService, resourcesService, eventService} from '..
 import Login from './Login';
 import { Register } from './Register';
 import { LoadingSpinner, ErrorMessage } from './common';
+import {     usePosts   } from '../services/usePosts';
 
 /**
  * This is the component that renders the home page of the website.
@@ -14,7 +15,14 @@ import { LoadingSpinner, ErrorMessage } from './common';
 
 const HomePage = () => {
     const { user, logout } = useAuth();
-
+    const {
+        posts,
+        //loading,
+        //error,
+        fetchPosts,
+        createPost,
+        votePost,
+      } = usePosts();
     const [activeTab, setActiveTab] = useState('home');
     // Auth modal states
     const [showLogin, setShowLogin] = useState(false);
@@ -28,7 +36,7 @@ const HomePage = () => {
     });
     const [error, setError] = useState(null);
 
-    const [posts, setPosts] = useState([]);
+    //const [posts, setPosts] = useState([]);
     const [businesses, setBusinesses] = useState([]);
     const [resources, setResources] = useState([]);
     const [events, setEvents] = useState([]);
@@ -61,7 +69,7 @@ const HomePage = () => {
     };
 
     // Fetch data functions
-    const fetchPosts = async () => {
+    /*const fetchPosts = async () => {
         try {
             setLoading(prev => ({ ...prev, posts: true }));
             const response = await postsService.getAllPosts();        
@@ -75,7 +83,7 @@ const HomePage = () => {
         } finally {
             setLoading(prev => ({ ...prev, posts: false }));
         }
-    };
+    };*/
 
     const fetchBusinesses = async () => {
         try {
