@@ -28,37 +28,7 @@ const AfricanCommunityPlatform = () => {
   // Auth modal states
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
-  
-  /*// Loading and error states
-  const [loading, setLoading] = useState({
-    posts: false,
-    businesses: false,
-    resources: false
-  }); */
   const [error, setError] = useState(null);
- /*
-  // Data states
-  const [posts, setPosts] = useState([]);
-  // used in the ForumPage component
-  const [businesses, setBusinesses] = useState([]);
-  // used in the BusinessesPage component
-  const [resources, setResources] = useState([]);
-  // used in the DirectoryPage component
-  const [stats, setStats] = useState({
-    totalMembers: 0,
-    totalBusinesses: 0,
-    totalResources: 0,
-    totalEvents: 0
-  }); // used in the HomePage component
-
-  // Form states : This is used in the ForumPage component
-  const [showCreatePost, setShowCreatePost] = useState(false);
-  const [newPost, setNewPost] = useState({
-    title: '',
-    content: '',
-    category: 'general'
-  });
-  */
   const navigation = [
     { id: 'home', name: 'Home', icon: Home },
     { id: 'forum', name: 'Forum', icon: MessageSquare },
@@ -66,17 +36,7 @@ const AfricanCommunityPlatform = () => {
     { id: 'businesses', name: 'Businesses', icon: Building2 },
     { id: 'events', name: 'Events', icon: Calendar }
   ];
-  /* // This is already used in the ForumPage component
-  const categories = [
-    { id: 'all', name: 'All Posts' },
-    { id: 'newcomers', name: 'Newcomers' },
-    { id: 'events', name: 'Events' },
-    { id: 'food', name: 'Food & Dining' },
-    { id: 'housing', name: 'Housing' },
-    { id: 'jobs', name: 'Jobs' },
-    { id: 'general', name: 'General Discussion' }
-  ];
-  */
+  
   // Auth handlers
   const handleLogin = () => {
     setShowLogin(true);
@@ -96,159 +56,9 @@ const AfricanCommunityPlatform = () => {
   const handleLogout = async () => {
     await logout();
     setActiveTab('home');
-  };
+  };*/
 
-  // Fetch data functions
-  const fetchPosts = async () => {
-    try {
-      setLoading(prev => ({ ...prev, posts: true }));
-      const response = await postsService.getAllPosts();
-      setPosts(response.data);
-    } catch (err) {
-      setError('Failed to fetch posts');
-      console.error('Error fetching posts:', err);
-    } finally {
-      setLoading(prev => ({ ...prev, posts: false }));
-    }
-  };
 
-  const fetchBusinesses = async () => {
-    try {
-      setLoading(prev => ({ ...prev, businesses: true }));
-      const response = await businessService.getAllBusinesses();
-      setBusinesses(response.data);
-    } catch (err) {
-      setError('Failed to fetch businesses');
-      console.error('Error fetching businesses:', err);
-    } finally {
-      setLoading(prev => ({ ...prev, businesses: false }));
-    }
-  };
-
-  const fetchResources = async () => {
-    try {
-      setLoading(prev => ({ ...prev, resources: true }));
-      const response = await resourcesService.getAllResources();
-      setResources(response.data);
-    } catch (err) {
-      setError('Failed to fetch resources');
-      console.error('Error fetching resources:', err);
-    } finally {
-      setLoading(prev => ({ ...prev, resources: false }));
-    }
-  };
-
-  // Initial data fetch
-  useEffect(() => {
-    fetchPosts();
-    fetchBusinesses();
-    fetchResources();
-  }, []);
-
-  // Update stats when data changes
-  useEffect(() => {
-    setStats({
-      totalMembers: 2847, // This would come from user count API
-      totalBusinesses: businesses.length,
-      totalResources: resources.length,
-      totalEvents: 34 // This would come from events API
-    });
-  }, [businesses.length, resources.length]);
-
-  // Handle post creation
-  const handleCreatePost = async (e) => {
-    e.preventDefault();
-    if (!user) {
-      setShowLogin(true);
-      return;
-    }
-
-    try {
-      const response = await postsService.createPost(newPost);
-      setPosts([response.data, ...posts]);
-      setNewPost({ title: '', content: '', category: 'general' });
-      setShowCreatePost(false);
-    } catch (err) {
-      setError('Failed to create post');
-      console.error('Error creating post:', err);
-    }
-  };
-
-  // Handle voting
-  const handleVote = async (postId, voteType) => {
-    if (!user) {
-      setShowLogin(true);
-      return;
-    }
-
-    try {
-      await postsService.votePost(postId, voteType);
-      setPosts(posts.map(post => 
-        post._id === postId 
-          ? { ...post, upvotes: post.upvotes + (voteType === 'up' ? 1 : -1) }
-          : post
-      ));
-    } catch (err) {
-      setError('Failed to vote');
-      console.error('Error voting:', err);
-    }
-  };
-
-  // Filter functions
-  const filteredPosts = posts.filter(post => 
-    (selectedCategory === 'all' || post.category === selectedCategory) &&
-    (searchTerm === '' || 
-     post.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-     post.content.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
-
-  const filteredBusinesses = businesses.filter(business =>
-    searchTerm === '' || 
-    business.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    business.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    business.category?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const filteredResources = resources.filter(resource =>
-    searchTerm === '' || 
-    resource.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    resource.type.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  // Format date function
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInHours = Math.floor((now - date) / (1000 * 60 * 60));
-    
-    if (diffInHours < 1) return 'Just now';
-    if (diffInHours < 24) return `${diffInHours} hours ago`;
-    if (diffInHours < 48) return '1 day ago';
-    return `${Math.floor(diffInHours / 24)} days ago`;
-  };
-
-  // Loading spinner component
-  const LoadingSpinner = () => (
-    <div className="flex items-center justify-center p-8">
-      <Loader className="w-8 h-8 animate-spin text-green-600" />
-    </div>
-  );
-
-  // Error message component
-  const ErrorMessage = ({ message, onRetry }) => (
-    <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
-      <p className="text-red-600 mb-2">{message}</p>
-      {onRetry && (
-        <button 
-          onClick={onRetry}
-          className="text-red-700 hover:text-red-800 font-semibold"
-        >
-          Try Again
-        </button>
-      )}
-    </div>
-  );
-*/
   // all the render functions were once here
   /**
    * This renders the components based on the active tab
