@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../services/useAuth';
 import { resourcesService } from '../services';
+import {   useResources  } from '../services/useResources';
 import { Star, MapPin, Phone, Clock, Loader } from 'lucide-react';
 import { LoadingSpinner, ErrorMessage } from './common';
 
@@ -13,15 +14,22 @@ import { LoadingSpinner, ErrorMessage } from './common';
  */
 const DirectoryPage = () => {
     const [searchTerm, setSearchTerm] = useState('');
-    const [resources, setResources] = useState([]);        
+    //const [resources, setResources] = useState([]);        
     
     // Loading and error states
-    const [loading, setLoading] = useState({
+    /*const [loading, setLoading] = useState({
         posts: false,
         businesses: false,
         resources: false
-    });
-    const [error, setError] = useState(null);
+    });*/
+    //const [error, setError] = useState(null);
+
+    const {
+        resources,
+        loading,
+        error,
+        fetchResources,
+      } = useResources();
         
     
     const filteredResources = resources.filter(resource =>
@@ -30,7 +38,7 @@ const DirectoryPage = () => {
         resource.type.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const fetchResources = async () => {
+    /*const fetchResources = async () => {
         try {
           setLoading(prev => ({ ...prev, resources: true }));
           const response = await resourcesService.getAllResources();
@@ -41,7 +49,7 @@ const DirectoryPage = () => {
         } finally {
           setLoading(prev => ({ ...prev, resources: false }));
         }
-    };
+    };*/
 
     
      // Initial data fetch
