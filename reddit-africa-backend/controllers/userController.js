@@ -1,5 +1,6 @@
 // controllers/userController.js
 const User = require("../models/User");
+// bcryptjs is the Node.js module that is used to implement the bcrypt hashing algorithm in Node.
 const bcrypt = require("bcryptjs");
 const { generateToken } = require("../middleware/auth");
 const validator = require("validator");
@@ -57,7 +58,8 @@ const registerUser = async (req, res) => {
     // Hash password
     // process.env.BCRYPT_SALT_ROUNDS is set in the .env file
     const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS) || 12;
-    const salt = await bcrypt.genSalt(saltRounds);
+    const salt = await bcrypt.genSalt(saltRounds); 
+    // add a random string to the password to hash more securely
     const passwordHash = await bcrypt.hash(password, salt); 
 
     // Create new user

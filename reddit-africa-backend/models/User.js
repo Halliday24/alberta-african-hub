@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+// bcryptjs is the Node.js module that is used to implement the bcrypt hashing algorithm in Node.
 const bcrypt = require("bcryptjs");
 
 const userSchema = new mongoose.Schema({

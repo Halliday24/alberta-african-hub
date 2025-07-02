@@ -61,9 +61,10 @@ app.use("/api/users/register", authLimiter);
 const corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigins = [
-      process.env.CORS_ORIGIN || "http://localhost:3000",
+      process.env.CORS_ORIGIN 
+      /*|| "http://localhost:3000",
       "http://localhost:3000", // Always allow localhost for development
-      "http://127.0.0.1:3000"
+      "http://127.0.0.1:3000" */
     ];
     
     // Allow requests with no origin (mobile apps, etc.)
