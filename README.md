@@ -27,6 +27,8 @@ User profile management.
 
 In order for us to see the environment variables, it is visibile for now. Once it is understood and the project is deployed, the environment variables will be removed in the .gitignore file.
 
-
+## Database
+The database is created by Benjamin on MongoDB Atlas Cloud, the application is currently connected to the URI in 
+the backend env file
 ## Future Updates
 "Modify Javascript to Typescript"
