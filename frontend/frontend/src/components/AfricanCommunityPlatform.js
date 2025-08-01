@@ -16,6 +16,7 @@ import HomePage from './HomePage'; // home page tab
 import ForumPage from './ForumPage'; // forum page tab
 import DirectoryPage from './DirectoryPage'; // directory page tab
 import BusinessesPage from './BusinessesPage'; // business page tab
+import UserProfile from './UserProfile'; // user profile page tab
 
 const AfricanCommunityPlatform = () => {
   // used by Navbar component
@@ -67,7 +68,7 @@ const AfricanCommunityPlatform = () => {
    */
   const renderContent = () => {
     switch (activeTab) {
-      case 'home': return <HomePage />;
+      case 'home': return <HomePage setActiveTab={setActiveTab} />;
       //renderHome();
       case 'forum': return <ForumPage />;
       //renderForum();
@@ -77,7 +78,9 @@ const AfricanCommunityPlatform = () => {
       //renderBusinesses();
       case 'events': return <EventsPage />;
       //renderEvents();
-      default: return <HomePage />;
+      case 'userProfile': return <UserProfile />;
+      //renderUserProfile();
+      default: return <HomePage setActiveTab={setActiveTab} />;
       //renderHome();
     }
   };

@@ -105,6 +105,11 @@ if (process.env.NODE_ENV === 'development') {
 // Connect to database
 connectDB();
 
+// Middleware to log each request
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();  // pass control to the next handler
+});
 
 // Routes
 app.use("/api/users", require("./routes/users"));

@@ -128,6 +128,8 @@ const loginUser = async (req, res) => {
       });
     }
 
+    // verify the email. Maybe send a verification email to the user
+    
     // Generate JWT token
     const token = generateToken(user._id);
 
