@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:6.0
+    container_name: african-hub-mongodb
+    # restart: unless-stopped
+    # environment:
+    #   MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME:-admin}
+    #   MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:-password}
+    #   MONGO_INITDB_DATABASE: ${MONGO_DATABASE:-african_community}
+    # volumes:
+    #   - mongodb_data:/data/db
+    ports:
+      - "27017:27017"
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Backend API
+  reddit-africa-backend:
+    build:
+      context: ./reddit-africa-backend
+      dockerfile: Dockerfile
+    container_name: african-hub-backend
+    restart: unless-stopped
+    env_file:
+      - ./reddit-africa-backend/.env
+    ports:
+      - "5000:5000"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
+  # Frontend React App
+  frontend:
+    build:
+      context: ./frontend/frontend
+      dockerfile: Dockerfile
+    container_name: african-hub-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - reddit-africa-backend
+    env_file:
+      - ./frontend/frontend/.env
